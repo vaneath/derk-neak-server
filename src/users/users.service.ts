@@ -15,8 +15,8 @@ export class UsersService {
     return await this.usersRepo.save(user);
   }
 
-  findAll() {
-    return this.usersRepo.find();
+  async findAll(): Promise<User[]> {
+    return await this.usersRepo.find();
   }
 
   async findOne(id: number): Promise<User> {
