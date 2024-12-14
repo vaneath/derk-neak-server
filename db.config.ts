@@ -12,5 +12,5 @@ export const getDbConfig = (
   password: configService.get<string>('DB_PASS', ''),
   database: configService.get<string>('DB_NAME', 'derk_neak'),
   entities: [path.join(__dirname, '/**/*.entity{.ts,.js}')],
-  synchronize: true,
+  synchronize: configService.get<boolean>('DB_SYNC', false),
 });
