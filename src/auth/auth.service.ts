@@ -14,7 +14,6 @@ export class AuthService {
       );
     }
 
-    // Compare the hashed password
     const isPasswordValid = await compare(plainPassword, user.password);
 
     if (!isPasswordValid) {
