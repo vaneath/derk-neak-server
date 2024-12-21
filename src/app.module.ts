@@ -9,18 +9,17 @@ import { RoutesModule } from './routes/routes.module';
 import { BlogsModule } from './blogs/blogs.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { AuthModule } from './auth/auth.module';
-import { getDbConfig } from 'db.config';
+import databaseConfig from 'db.config';
+import jwtConfig from './auth/config/jwt.config';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: [`.env.${process.env.NODE_ENV}` || '.env'],
+      load: [databaseConfig],
+      envFilePath: ['.env', `.env.${process.env.NODE_ENV}`],
       isGlobal: true,
     }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (configService: ConfigService) => getDbConfig(configService),
-    }),
+    TypeOrmModule.forRootAsync(databaseConfig.asProvider()),
     UsersModule,
     BusesModule,
     RoutesModule,
