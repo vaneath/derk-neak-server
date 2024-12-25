@@ -1,4 +1,9 @@
-import { Injectable, UseGuards } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+  UseGuards,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -11,38 +16,77 @@ export class UsersService {
 
   async create(createUserDto: CreateUserDto): Promise<User> {
     const user = this.usersRepo.create(createUserDto);
-
-    return await this.usersRepo.save(user);
+    try {
+      return await this.usersRepo.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException('Failed to create user');
+    }
   }
 
   async findAll(): Promise<User[]> {
-    return await this.usersRepo.find();
+    return await this.usersRepo.find({
+      select: ['id', 'email', 'firstName', 'lastName', 'role'],
+    });
   }
 
   async findOne(id: number): Promise<User> {
     return await this.usersRepo.findOne({
       where: { id },
-      select: ['id', 'email', 'firstName', 'lastName', 'hashedRefreshToken'],
+      select: [
+        'id',
+        'email',
+        'firstName',
+        'lastName',
+        'hashedRefreshToken',
+        'role',
+      ],
     });
   }
 
   async findByEmail(email: string): Promise<User> {
-    return await this.usersRepo.findOne({
-      where: {
-        email,
-      },
+    const user = await this.usersRepo.findOne({
+      where: { email },
     });
+    if (!user) {
+      throw new NotFoundException(`User with email ${email} not found`);
+    }
+    return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return this.usersRepo.update(id, updateUserDto);
+  async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
+    const user = await this.usersRepo.preload({
+      id,
+      ...updateUserDto,
+    });
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+    try {
+      return await this.usersRepo.save(user);
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Failed to update user with ID ${id}`,
+      );
+    }
   }
 
   async updateRefreshToken(id: number, hashedRefreshToken: string) {
     return this.usersRepo.update(id, { hashedRefreshToken });
   }
 
-  async remove(id: number) {
-    return this.usersRepo.delete(id);
+  async remove(id: number): Promise<{ message: string }> {
+    const user = await this.findOne(id);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${id} not found`);
+    }
+
+    try {
+      await this.usersRepo.remove(user);
+      return { message: `User with ID ${id} successfully deleted` };
+    } catch (error) {
+      throw new InternalServerErrorException(
+        `Failed to delete user with ID ${id}`,
+      );
+    }
   }
 }
