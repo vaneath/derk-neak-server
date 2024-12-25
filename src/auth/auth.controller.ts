@@ -3,12 +3,13 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from './guards/local-auth/local-auth.guard';
 import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
-import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { Public } from './decorators/public.decorator';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Public()
   @HttpCode(200)
   @UseGuards(LocalAuthGuard)
   @Post('login')
@@ -29,7 +30,6 @@ export class AuthController {
   }
 
   @HttpCode(204)
-  @UseGuards(JwtAuthGuard)
   @Post('logout')
   async logout(@Request() req) {
     await this.authService.logout(req.user.id);

@@ -17,27 +17,6 @@ export class AuthService {
     private refreshJwtConfig,
   ) {}
 
-  async validateUser(email: string, plainPassword: string) {
-    const user = await this.usersService.findByEmail(email);
-    if (!user) {
-      throw new UnauthorizedException(
-        'Invalid email or password. Please try again.',
-      );
-    }
-
-    const isPasswordValid = await compare(plainPassword, user.password);
-
-    if (!isPasswordValid) {
-      throw new UnauthorizedException(
-        'Invalid email or password. Please try again.',
-      );
-    }
-
-    const { password, ...result } = user;
-
-    return result;
-  }
-
   async login(userId: number) {
     const { accessToken, refreshToken } = await this.generateTokens(userId);
 
@@ -50,6 +29,10 @@ export class AuthService {
       access_token: accessToken,
       refresh_token: refreshToken,
     };
+  }
+
+  async logout(userId: number) {
+    return this.usersService.updateRefreshToken(userId, null);
   }
 
   async generateTokens(userId: number) {
@@ -82,6 +65,27 @@ export class AuthService {
       access_token: token,
       refresh_token: refreshToken,
     };
+  }
+
+  async validateUser(email: string, plainPassword: string) {
+    const user = await this.usersService.findByEmail(email);
+    if (!user) {
+      throw new UnauthorizedException(
+        'Invalid email or password. Please try again.',
+      );
+    }
+
+    const isPasswordValid = await compare(plainPassword, user.password);
+
+    if (!isPasswordValid) {
+      throw new UnauthorizedException(
+        'Invalid email or password. Please try again.',
+      );
+    }
+
+    const { password, ...result } = user;
+
+    return result;
   }
 
   async validateRefreshToken(userId: number, refreshToken: string) {
@@ -117,9 +121,5 @@ export class AuthService {
     const currentUser: CurrentUser = { ...user };
 
     return currentUser;
-  }
-
-  async logout(userId: number) {
-    return this.usersService.updateRefreshToken(userId, null);
   }
 }
