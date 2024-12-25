@@ -47,9 +47,7 @@ export class UsersService {
     const user = await this.usersRepo.findOne({
       where: { email },
     });
-    if (!user) {
-      throw new NotFoundException(`User with email ${email} not found`);
-    }
+
     return user;
   }
 

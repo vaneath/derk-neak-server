@@ -1,4 +1,3 @@
-// src/auth/config/jwt.config.ts
 import { registerAs } from '@nestjs/config';
 import { JwtSignOptions } from '@nestjs/jwt';
 
