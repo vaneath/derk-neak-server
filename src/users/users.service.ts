@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './entities/user.entity';
@@ -20,7 +20,10 @@ export class UsersService {
   }
 
   async findOne(id: number): Promise<User> {
-    return await this.usersRepo.findOneBy({ id });
+    return await this.usersRepo.findOne({
+      where: { id },
+      select: ['id', 'email', 'firstName', 'lastName', 'hashedRefreshToken'],
+    });
   }
 
   async findByEmail(email: string): Promise<User> {
@@ -33,6 +36,10 @@ export class UsersService {
 
   async update(id: number, updateUserDto: UpdateUserDto) {
     return this.usersRepo.update(id, updateUserDto);
+  }
+
+  async updateRefreshToken(id: number, hashedRefreshToken: string) {
+    return this.usersRepo.update(id, { hashedRefreshToken });
   }
 
   async remove(id: number) {
