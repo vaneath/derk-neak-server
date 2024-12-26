@@ -76,7 +76,7 @@ export class AuthService {
       );
     }
 
-    const isPasswordValid = await compare(plainPassword, user.password);
+    const isPasswordValid = await argon2.verify(user.password, plainPassword);
 
     if (!isPasswordValid) {
       throw new UnauthorizedException(
