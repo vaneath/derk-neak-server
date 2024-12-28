@@ -1,4 +1,5 @@
 import {
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -14,10 +15,17 @@ import { AuthJwtPayload } from './types/auth-jwtPayload';
 import { RefreshAuthGuard } from './guards/refresh-auth/refresh-auth.guard';
 import { Public } from './decorators/public.decorator';
 import { GoogleAuthGuard } from './guards/google-auth/google-auth.guard';
+import { Role } from './enums/role.enum';
+import { Roles } from './decorators/roles.decorator';
+import { JwtAuthGuard } from './guards/jwt-auth/jwt-auth.guard';
+import { UsersService } from 'src/users/users.service';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private userService: UsersService,
+  ) {}
 
   @Public()
   @HttpCode(200)
@@ -48,8 +56,7 @@ export class AuthController {
   @Public()
   @UseGuards(GoogleAuthGuard)
   @Get('google/login')
-  async googleLogin() {
-  }
+  async googleLogin() {}
 
   @Public()
   @UseGuards(GoogleAuthGuard)
@@ -58,5 +65,24 @@ export class AuthController {
     const response = await this.authService.login(req.user);
 
     res.redirect(`http://localhost:5173?token=${response.access_token}`);
+  }
+
+  @Roles(Role.ADMIN)
+  @UseGuards(JwtAuthGuard)
+  @Post('impersonate')
+  async impersonate(@Body() body) {
+    const email = body.email;
+    const user = await this.userService.findByEmail(email);
+
+    const { access_token, refresh_token } = await this.authService.login(
+      user.id,
+    );
+
+    return {
+      id: user.id,
+      email,
+      access_token,
+      refresh_token,
+    };
   }
 }
