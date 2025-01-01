@@ -1,6 +1,19 @@
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsString, IsInt } from 'class-validator';
+
 export class CreateBusDto {
-  bus_number: string;
-  bus_plate: string;
-  bus_driver: string;
+  busNumber: string;
+
+  @IsNotEmpty()
+  @IsString()
+  busPlate: string;
+
+  @IsNotEmpty()
+  @IsString()
+  busDriver: string;
+
+  @IsNotEmpty()
+  @IsInt()
+  @Type(() => Number)
   capacity: number;
 }
