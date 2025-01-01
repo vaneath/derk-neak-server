@@ -5,14 +5,14 @@ export class Bus {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  bus_number: string;
+  @Column({ nullable: true })
+  busNumber: string;
 
   @Column()
-  bus_plate: string;
+  busPlate: string;
 
   @Column()
-  bus_driver: string;
+  busDriver: string;
 
   @Column()
   capacity: number;

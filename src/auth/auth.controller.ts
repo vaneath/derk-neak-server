@@ -37,6 +37,7 @@ export class AuthController {
     return payload;
   }
 
+  @Public()
   @UseGuards(RefreshAuthGuard)
   @Post('refresh')
   async refreshToken(@Request() req) {

@@ -13,9 +13,21 @@ export class Schedule {
   @ManyToOne(() => Route)
   route: Route;
 
-  @Column({ type: 'timestamp' })
-  departureTime: Date;
+  @Column({ type: 'date' })
+  departureDate: Date;
 
-  @Column({ type: 'timestamp' })
-  arrivalTime: Date;
+  @Column({ type: 'time' })
+  departureTime: string;
+
+  @Column({ type: 'date', nullable: true })
+  returnDate: Date;
+
+  @Column({ type: 'time', nullable: true })
+  returnTime: string;
+
+  @Column({ nullable: true })
+  tripDuration: string;
+
+  @Column({ type: 'boolean', default: false })
+  isRoundTrip: boolean;
 }

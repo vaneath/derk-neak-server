@@ -10,6 +10,7 @@ import {
 import { BusesService } from './buses.service';
 import { CreateBusDto } from './dto/create-bus.dto';
 import { UpdateBusDto } from './dto/update-bus.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('buses')
 export class BusesController {
@@ -20,6 +21,7 @@ export class BusesController {
     return this.busesService.create(createBusDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.busesService.findAll();

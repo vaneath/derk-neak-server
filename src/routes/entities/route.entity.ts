@@ -10,4 +10,7 @@ export class Route {
 
   @Column()
   destination: string;
+
+  @Column({ default: true })
+  isAvailable: boolean;
 }
