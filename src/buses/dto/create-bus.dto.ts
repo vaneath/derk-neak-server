@@ -1,19 +1,39 @@
+import { IsInt, IsNotEmpty, IsString, Min, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, IsInt } from 'class-validator';
+
+class ColumnRowConfig {
+  @IsString()
+  column: string;
+
+  @IsInt()
+  @Min(1)
+  rows: number;
+}
 
 export class CreateBusDto {
+  @IsString()
+  @IsNotEmpty()
   busNumber: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   busPlate: string;
 
-  @IsNotEmpty()
   @IsString()
+  @IsNotEmpty()
   busDriver: string;
 
-  @IsNotEmpty()
   @IsInt()
-  @Type(() => Number)
+  @Min(1)
   capacity: number;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ColumnRowConfig)
+  lowerDeckConfig: ColumnRowConfig[];
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => ColumnRowConfig)
+  upperDeckConfig: ColumnRowConfig[];
 }

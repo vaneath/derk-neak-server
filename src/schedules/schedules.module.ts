@@ -3,14 +3,16 @@ import { SchedulesService } from './schedules.service';
 import { SchedulesController } from './schedules.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Schedule } from './entities/schedule.entity';
-import { BusesService } from 'src/buses/buses.service';
-import { RoutesService } from 'src/routes/routes.service';
-import { Bus } from 'src/buses/entities/bus.entity';
-import { Route } from 'src/routes/entities/route.entity';
+import { BusesModule } from 'src/buses/buses.module';
+import { RoutesModule } from 'src/routes/routes.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Schedule, Bus, Route])],
+  imports: [
+    TypeOrmModule.forFeature([Schedule]),
+    BusesModule,
+    RoutesModule,
+  ],
   controllers: [SchedulesController],
-  providers: [SchedulesService, BusesService, RoutesService],
+  providers: [SchedulesService],
 })
 export class SchedulesModule {}
