@@ -85,4 +85,11 @@ export class AuthController {
       refresh_token,
     };
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('profile')
+  async getProfile(@Req() req) {
+    const userId = req.user.id;
+    return this.authService.getProfile(userId);
+  }
 }

@@ -1,26 +1,50 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Schedule } from './entities/schedule.entity';
 
 @Injectable()
 export class SchedulesService {
-  create(createScheduleDto: CreateScheduleDto) {
-    return 'This action adds a new schedule';
+  constructor(
+    @InjectRepository(Schedule)
+    private schedulesRepository: Repository<Schedule>,
+  ) {}
+
+  async create(createScheduleDto: CreateScheduleDto): Promise<Schedule> {
+    const schedule = this.schedulesRepository.create(createScheduleDto);
+    return await this.schedulesRepository.save(schedule);
   }
 
-  findAll() {
-    return `This action returns all schedules`;
+  async findAll(): Promise<Schedule[]> {
+    return await this.schedulesRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} schedule`;
+  async findOne(id: number): Promise<Schedule> {
+    const schedule = await this.schedulesRepository.findOne({ where: { id } });
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with ID ${id} not found`);
+    }
+    return schedule;
   }
 
-  update(id: number, updateScheduleDto: UpdateScheduleDto) {
-    return `This action updates a #${id} schedule`;
+  async update(
+    id: number,
+    updateScheduleDto: UpdateScheduleDto,
+  ): Promise<Schedule> {
+    const schedule = await this.schedulesRepository.preload({
+      id,
+      ...updateScheduleDto,
+    });
+    if (!schedule) {
+      throw new NotFoundException(`Schedule with ID ${id} not found`);
+    }
+    return await this.schedulesRepository.save(schedule);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} schedule`;
+  async remove(id: number): Promise<void> {
+    const schedule = await this.findOne(id);
+    await this.schedulesRepository.remove(schedule);
   }
 }

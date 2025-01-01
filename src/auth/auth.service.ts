@@ -2,6 +2,7 @@ import {
   Body,
   Inject,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
@@ -159,5 +160,14 @@ export class AuthService {
       access_token: this.generateTokens(user.id),
       refresh_token: this.generateTokens(user.id),
     };
+  }
+
+  async getProfile(userId: number): Promise<CurrentUser> {
+    const user = await this.usersService.findOne(userId);
+    if (!user) {
+      throw new NotFoundException(`User with ID ${userId} not found`);
+    }
+    const { password, hashedRefreshToken, ...profile } = user;
+    return profile;
   }
 }
