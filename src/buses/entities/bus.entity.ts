@@ -18,6 +18,6 @@ export class Bus {
   @Column()
   capacity: number;
 
-  @OneToMany(() => Seat, (seat) => seat.bus, { eager: true })
+  @OneToMany(() => Seat, (seat) => seat.bus)
   seats: Seat[];
 }

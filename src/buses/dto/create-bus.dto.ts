@@ -1,11 +1,4 @@
-import {
-  IsInt,
-  IsNotEmpty,
-  IsString,
-  Min,
-  IsArray,
-  ValidateNested,
-} from 'class-validator';
+import { IsInt, IsNotEmpty, IsString, Min, IsArray, ValidateNested } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class ColumnRowConfig {
