@@ -10,6 +10,7 @@ import {
 import { SchedulesService } from './schedules.service';
 import { CreateScheduleDto } from './dto/create-schedule.dto';
 import { UpdateScheduleDto } from './dto/update-schedule.dto';
+import { Public } from 'src/auth/decorators/public.decorator';
 
 @Controller('schedules')
 export class SchedulesController {
@@ -20,6 +21,7 @@ export class SchedulesController {
     return this.schedulesService.create(createScheduleDto);
   }
 
+  @Public()
   @Get()
   findAll() {
     return this.schedulesService.findAll();

@@ -2,7 +2,6 @@ import {
   Injectable,
   InternalServerErrorException,
   NotFoundException,
-  UseGuards,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -19,7 +18,9 @@ export class UsersService {
     try {
       return await this.usersRepo.save(user);
     } catch (error) {
-      throw new InternalServerErrorException('Failed to create user');
+      throw new InternalServerErrorException(
+        `Failed to create user. ${error.message}`,
+      );
     }
   }
 
@@ -63,7 +64,7 @@ export class UsersService {
       return await this.usersRepo.save(user);
     } catch (error) {
       throw new InternalServerErrorException(
-        `Failed to update user with ID ${id}`,
+        `Failed to update user with ID ${id}. ${error.message}`,
       );
     }
   }
@@ -83,7 +84,7 @@ export class UsersService {
       return { message: `User with ID ${id} successfully deleted` };
     } catch (error) {
       throw new InternalServerErrorException(
-        `Failed to delete user with ID ${id}`,
+        `Failed to delete user with ID ${id}. ${error.message}`,
       );
     }
   }

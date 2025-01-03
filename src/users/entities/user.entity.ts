@@ -1,4 +1,10 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  BeforeInsert,
+  Column,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import * as argon2 from 'argon2';
 import { Role } from 'src/auth/enums/role.enum';
 import { Ticket } from 'src/tickets/entities/ticket.entity';

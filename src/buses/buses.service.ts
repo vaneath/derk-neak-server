@@ -8,8 +8,6 @@ import { Repository } from 'typeorm';
 import { CreateBusDto } from './dto/create-bus.dto';
 import { UpdateBusDto } from './dto/update-bus.dto';
 import { Bus } from './entities/bus.entity';
-import { Seat } from 'src/seats/entities/seat.entity';
-import { SeatGenerator } from 'src/seats/generators/seat.generator';
 import { SeatsService } from 'src/seats/seats.service';
 
 @Injectable()
