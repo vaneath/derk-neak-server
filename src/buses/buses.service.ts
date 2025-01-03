@@ -40,7 +40,7 @@ export class BusesService {
 
     // Delegate seat generation to SeatsService
     await this.seatsService.generateAndSaveSeats(
-      savedBus,
+      { id: savedBus.id } as Bus,
       lowerDeckConfig,
       upperDeckConfig,
     );
@@ -49,7 +49,7 @@ export class BusesService {
   }
 
   async findAll(): Promise<Bus[]> {
-    return await this.busRepository.find({ relations: { seats: true } });
+    return await this.busRepository.find();
   }
 
   async findOne(id: number): Promise<Bus> {

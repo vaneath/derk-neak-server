@@ -10,6 +10,7 @@ import { BlogsModule } from './blogs/blogs.module';
 import { SchedulesModule } from './schedules/schedules.module';
 import { AuthModule } from './auth/auth.module';
 import { SeatsModule } from './seats/seats.module';
+import { TicketsModule } from './tickets/tickets.module';
 import databaseConfig from 'db.config';
 
 @Module({
@@ -27,6 +28,7 @@ import databaseConfig from 'db.config';
     SchedulesModule,
     AuthModule,
     SeatsModule,
+    TicketsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

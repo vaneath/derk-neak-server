@@ -1,6 +1,7 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import * as argon2 from 'argon2';
 import { Role } from 'src/auth/enums/role.enum';
+import { Ticket } from 'src/tickets/entities/ticket.entity';
 
 @Entity('users')
 export class User {
@@ -16,9 +17,6 @@ export class User {
   @Column({ nullable: true })
   profileImageUrl: string;
 
-  @Column({ type: 'enum', enum: Role, default: Role.USER })
-  role: Role;
-
   @Column({ type: 'varchar', length: 40 })
   email: string;
 
@@ -27,6 +25,12 @@ export class User {
 
   @Column({ nullable: true })
   hashedRefreshToken: string;
+
+  @Column({ type: 'enum', enum: Role, default: Role.USER })
+  role: Role;
+
+  @OneToMany(() => Ticket, (ticket) => ticket.user)
+  tickets: Ticket[];
 
   @BeforeInsert()
   async hashPassword() {
