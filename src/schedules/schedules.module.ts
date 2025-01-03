@@ -7,11 +7,7 @@ import { BusesModule } from 'src/buses/buses.module';
 import { RoutesModule } from 'src/routes/routes.module';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Schedule]),
-    BusesModule,
-    RoutesModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Schedule]), BusesModule, RoutesModule],
   controllers: [SchedulesController],
   providers: [SchedulesService],
 })
