@@ -13,6 +13,7 @@ import { AuthJwtPayload } from './types/auth-jwtPayload';
 import * as argon2 from 'argon2';
 import { CurrentUser } from './types/current-user';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
+import { omit } from 'lodash';
 
 @Injectable()
 export class AuthService {
@@ -32,8 +33,8 @@ export class AuthService {
 
     return {
       id: userId,
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -60,7 +61,7 @@ export class AuthService {
 
   async refreshToken(user: AuthJwtPayload) {
     const payload: AuthJwtPayload = { sub: user.sub };
-    const token = this.jwtService.sign(payload);
+    const accessToken = this.jwtService.sign(payload);
     const refreshToken = this.jwtService.sign(
       payload,
       this.refreshJwtConfig as ConfigType<typeof refreshJwtConfig>,
@@ -68,8 +69,8 @@ export class AuthService {
 
     return {
       id: user.sub,
-      access_token: token,
-      refresh_token: refreshToken,
+      accessToken,
+      refreshToken,
     };
   }
 
@@ -89,7 +90,7 @@ export class AuthService {
       );
     }
 
-    const { password, ...result } = user;
+    const result = omit(user, ['password']);
 
     return result;
   }
@@ -156,8 +157,8 @@ export class AuthService {
       id: user.id,
       email: user.email,
       role: user.role,
-      access_token: this.generateTokens(user.id),
-      refresh_token: this.generateTokens(user.id),
+      accessToken: this.generateTokens(user.id),
+      refreshToken: this.generateTokens(user.id),
     };
   }
 
@@ -166,7 +167,9 @@ export class AuthService {
     if (!user) {
       throw new NotFoundException(`User with ID ${userId} not found`);
     }
-    const { password, hashedRefreshToken, ...profile } = user;
-    return profile;
+
+    const result = omit(user, ['password', 'hashedRefreshToken']);
+
+    return result as CurrentUser;
   }
 }

@@ -65,7 +65,7 @@ export class AuthController {
   async googleLoginCallback(@Req() req, @Res() res) {
     const response = await this.authService.login(req.user);
 
-    res.redirect(`http://localhost:5173?token=${response.access_token}`);
+    res.redirect(`http://localhost:5173?token=${response.accessToken}`);
   }
 
   @Roles(Role.ADMIN)
@@ -75,15 +75,13 @@ export class AuthController {
     const email = body.email;
     const user = await this.userService.findByEmail(email);
 
-    const { access_token, refresh_token } = await this.authService.login(
-      user.id,
-    );
+    const { accessToken, refreshToken } = await this.authService.login(user.id);
 
     return {
       id: user.id,
       email,
-      access_token,
-      refresh_token,
+      accessToken,
+      refreshToken,
     };
   }
 

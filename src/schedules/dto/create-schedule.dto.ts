@@ -21,7 +21,7 @@ export class CreateScheduleDto {
 
   @ValidateIf((o) => o.isRoundTrip === true)
   @IsNotEmpty()
-  returnDate?: string; // Format: YYYY-MM-DD
+  returnDate?: string;
 
   @ValidateIf((o) => o.isRoundTrip === true)
   @IsNotEmpty()
